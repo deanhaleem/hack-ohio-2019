@@ -47,7 +47,8 @@ def analyzeImage(image_path):
     # The 'analysis' object contains various fields that describe the image. The most
     # relevant caption for the image is obtained from the 'description' property.
     analysis = response.json()
-    return analysis['description']['captions'][0]['text']
+    # return analysis['description']['captions'][0]['text']
+    return analysis
 
 
 
@@ -78,18 +79,21 @@ for i, obj in enumerate(data):
     image_url = obj['data']['url']
     res = requests.get(image_url, stream=True)
     
-    # try:
+    #
     path = os.path.join('./redditImages/',str(i)+'.jpg')
     
-    with open (path, 'wb') as f:
+    with open (path, 'wb') as f, open(dataPath, 'a+') as d:
         res.raw.decode_content = True
         imgdata = res.raw
         shutil.copyfileobj(res.raw, f) 
-        try:
-            print(analyzeImage(path))
-            print("success")
-        except:
-            print('couldnt do the thing')
+        
+        analysis = analyzeImage(path)
+        print(analysis)
+        json.dump(analysis, d)
+        
+        print("success")
+    # except:
+    #     print('couldnt do the thing')
     # except:
         # print("hi")
 
