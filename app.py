@@ -96,22 +96,34 @@ def home():
             flash('No selected file')
             return redirect('index.html')
         if file:
-            file_path = os.path.join(app.config['UPLOAD_FOLDER'], file.filename)
-            print("PATH NAME:" + file_path)
-            file.save(file_path)
-            resp = local_file(file_path)            
+            uploaded_files = request.files.getlist("file")
+            print(uploaded_files)
+            array = []
+            for f in uploaded_files:
+                name = extractName(f.filename)
+                file_path = os.path.join(app.config['UPLOAD_FOLDER'], name)
+                print("PATH NAME:" + file_path)
+                f.save(file_path)
+                array.append(local_file(file_path))
             
-        return render_template('pages/placeholder.home.html', title='Upload', src=file_path)
+            data = request.form['projectFilepath']        
+            print(data)
+            
+        return render_template('pages/placeholder.home.html', title='Upload', src=array[0])
     else:
         return '''
         <!doctype html>
         <title>Upload New File</title>
         <h1>Upload New File</h1>
         <form method=post enctype=multipart/form-data>
-        <input type=file name=file>
-        <input type=submit value=upload>
+            <input type="text" name="projectFilepath"> 
+            <input type=file name="file" multiple webkitdirectory>      
+            <input type=submit value=upload>      
         </form>
         '''
+
+def extractName(name):
+    return os.path.dirname(os.path.abspath(name))
 
 @app.route('/about')
 def about():
