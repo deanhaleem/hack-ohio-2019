@@ -181,7 +181,7 @@ def home():
 
 
             
-        return render_template('pages/display.html', title='Upload', pics=picArr)
+        return render_template('pages/display.html', title='Upload', pics=rankedImgs)
     else:
         return render_template('pages/placeholder.home.html', please=4, p=4)
 
