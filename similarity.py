@@ -3,13 +3,19 @@ import numpy as np
 import math
 
 # templateImg is a list of images
-def similarityScore(myImg, templateImgPath):
+def similarityScore(myImgPath, templateImgPath):
+    myImg = cv2.imread(myImgPath)
+    try:
+        myImg = cv2.resize(myImg, (500, 500))
+    except:
+        print('empty')
     best_scores = []
     best_images = []
     histr = cv2.calcHist([myImg],[0],None,[256],[0,256])
 
     for imP in templateImgPath:
         im = cv2.imread(imP)
+        
         histg = cv2.calcHist([im], [0], None, [256], [0, 256])
         a = cv2.compareHist(histr, histg, cv2.HISTCMP_BHATTACHARYYA)
 
@@ -32,19 +38,20 @@ def similarityScore(myImg, templateImgPath):
 
     return sum(best_scores)/3, best_images, best_scores
 
-def show(myImgPath, best_images):
-    myImg = cv2.imread(myImgPath)
-    myImg = cv2.resize(myImg, (500,500))
-    bImgs = []
-    for l in best_images:
-        bImgs.append(cv2.resize(cv2.imread(l), (500,500)))
+# def show(myImgPath, best_images):
+#     myImg = cv2.imread(myImgPath)
+#     myImg = cv2.resize(myImg, (500,500))
+#     bImgs = []
+#     for l in best_images:
+#         bImgs.append(cv2.resize(cv2.imread(l), (500,500)))
 
-    cv2.imshow("mine",myImg)
-    cv2.imshow("yours",np.hstack((bImgs[0], bImgs[1], bImgs[2])))
-    cv2.waitKey(0)
+#     cv2.imshow("mine",myImg)
+#     cv2.imshow("yours",np.hstack((bImgs[0], bImgs[1], bImgs[2])))
+#     cv2.waitKey(0)
 
-imgs = []
-for l in range(25):
-    imgs.append(f"redditImages/{l}.jpg")
-myImg = cv2.imread("mine.jpg")
-a, bestP, best_scores = similarityScore(myImg, imgs)
+# imgs = []
+# for l in range(25):
+#     imgs.append(f"redditImages/{l}.jpg")
+# myImg = cv2.imread("mine.jpg")
+# a, bestP, best_scores = similarityScore(imgs[0], imgs)
+# print(a)

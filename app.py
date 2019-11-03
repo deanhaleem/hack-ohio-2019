@@ -14,8 +14,9 @@ import requests
 # %matplotlib inline
 from PIL import Image #pip install Pillow
 from io import BytesIO
-import similarity
-import similaritySifts
+from similarity import *
+from similaritySift import *
+import glob
 
 #----------------------------------------------------------------------------#
 # App Config.
@@ -49,7 +50,25 @@ def login_required(test):
 #----------------------------------------------------------------------------#
 # Controllers.
 #----------------------------------------------------------------------------#
+def getMatches():
+    pass
 
+
+def getData(path):
+    f = open(path, "r")
+    lines = []
+    imageData = {}
+
+    for i, line in enumerate(f):
+        formatted = json.loads(line)
+
+        waterImages = formatted['water']
+        peopleImages = formatted['people']
+        buildingImages = formatted['buildings']
+        
+
+        
+    return waterImages, peopleImages, buildingImages
 
 def analyze_image(url):
     os.environ['COMPUTER_VISION_SUBSCRIPTION_KEY'] = "ceb12c15a400458eb6884a6dc119986b"
@@ -86,12 +105,15 @@ def analyze_image(url):
     return analysis
 
 @app.route('/', methods=['GET', 'POST'])
-def home():    
+def home():
+    waterImages, peopleImages, buildingImages = getData('data.txt')
     if request.method == 'POST':
+        label = request.form['projectFilepath']
+        print(label) 
         # check if the post request has the file part
         if 'file' not in request.files:
             flash('No file part')
-            return redirect('index.html')
+            return redirect('index.html')   
         file = request.files['file']
         # if user does not select file, browser also
         # submit an empty part without filename
@@ -100,19 +122,52 @@ def home():
             return redirect('index.html')
         if file:
             uploaded_files = request.files.getlist("file")
-            print(uploaded_files)
+            # print(uploaded_files)
             array = []
             picArr = []
             for f in uploaded_files:
                 name = extractName(f.filename)
+                
                 file_path = os.path.join(app.config['UPLOAD_FOLDER'], name)
-                print(file_path)
+                # print(file_path)
                 f.save(file_path)
                 picArr.append(file_path)
-                array.append(local_file(file_path))
+                extractedData = analyze_image(file_path) 
+                # tags = extractedData['descriptions']['tags']
+                mylist = [f for f in glob.glob("redditImages/*.jpg")]
+                if label == 'water':
+                    histScore = similarityScore(file_path, mylist)
+                    siftScore = SiftsimilarityScore(file_path, mylist)
+        
+                
+                if label == 'people':
+                    histScore = similarityScore(file_path, mylist)
+                    siftScore = SiftsimilarityScore(file_path, mylist)
+
+
+                if label == 'building' or label == 'buildings':
+                    histScore = similarityScore(file_path, mylist)
+                    siftScore = SiftsimilarityScore(file_path, mylist)
+          
+                finalScore = histScore[0]*0.6 + siftScore[0]*0.4
+                print(finalScore)
+                
+                if finalScore < 0.7 and finalScore > 0.1:
+                    
+                    print('Nice Pic')
+                else:
+                    print('time to hang up your camera')
+
+
+                    
+                
+
+                array.append(extractedData)
+
             
-            data = request.form['projectFilepath']
-            print(data)
+           
+
+
             
         return render_template('pages/display.html', title='Upload', pics=picArr)
     else:
