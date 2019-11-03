@@ -49,14 +49,14 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="/">Asthetic</a>
+          <a class="navbar-brand" href="/">Home</a>
         </div>
         <div class="collapse navbar-collapse">
-          <ul class="nav navbar-nav">
+          <!-- <ul class="nav navbar-nav">
             <li {% if request.endpoint == 'about' %} class="active" {% endif %}><a href="{{ url_for('about') }}">About</a></li>
             <li {% if request.endpoint == 'gallery' %} class="active" {% endif %}><a href="{{ url_for('gallery') }}">Gallery</a></li>
             <li {% if request.endpoint == 'improvement' %} class="active" {% endif %}><a href="{{ url_for('improvement') }}">How to Improve</a></li>
-          </ul>
+          </ul> -->
           <ul class="nav navbar-nav pull-right">
               <li class='nav-item'>
                   <a class='nav-link' href='https://github.com/deanhaleem/flask-hack-2019' target="_blank" title='GitHub'><i class='fab fa-github'></i></a>
@@ -86,8 +86,8 @@
   </div>
 
   <div id="footer">
-    <div class="container">
-      <p>Your Company &copy; All Rights Reserved.</p>
+    <div class="container text-center">
+      <p>Thank you for checking our our app!</p>
       {% block footer %}{% endblock %}
     </div>
   </div>
