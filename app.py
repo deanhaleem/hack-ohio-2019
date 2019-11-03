@@ -159,7 +159,7 @@ def home():
                     histScore = similarityScore(file_path, buildingImages)
                     siftScore = SiftsimilarityScore(file_path, buildingImages)
           
-                finalScore = histScore[0]*0.6 + siftScore[0]*0.4
+                finalScore = (histScore[0]*0.6 + siftScore[0]*0.4)/2
                 print(finalScore)
 
                 if finalScore < 0.7 and finalScore > 0.1:
