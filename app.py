@@ -50,9 +50,14 @@ def login_required(test):
 #----------------------------------------------------------------------------#
 # Controllers.
 #----------------------------------------------------------------------------#
-def getMatches(val):
-    # sort score with respect to the value
-     
+def getMatches(best_scores, best_images):
+    for i,best_i in enumerate(best_scores):
+            for j,best_j in enumerate(best_scores):
+                if best_i > best_j:
+                    best_scores[i], best_scores[j] = best_scores[j], best_scores[i]
+                    best_images[i], best_images[j] = best_images[j], best_images[i]
+    return best_images
+                    
 
 
 def getData(path):
@@ -64,12 +69,12 @@ def getData(path):
         formatted = json.loads(line)
 
         waterImages = formatted['water']
-        peopleImages = formatted['people']
+        natureImages = formatted['nature']
         buildingImages = formatted['buildings']
         
 
         
-    return waterImages, peopleImages, buildingImages
+    return waterImages, natureImages, buildingImages
 
 def analyze_image(url):
     os.environ['COMPUTER_VISION_SUBSCRIPTION_KEY'] = "ceb12c15a400458eb6884a6dc119986b"
@@ -108,7 +113,8 @@ def analyze_image(url):
 @app.route('/', methods=['GET', 'POST'])
 def home():
     scores = []
-    waterImages, peopleImages, buildingImages = getData('data.txt')
+    imagesToRank = []
+    waterImages, natureImages, buildingImages = getData('data.txt')
     if request.method == 'POST':
         label = request.form['projectFilepath']
         print(label) 
@@ -142,14 +148,14 @@ def home():
                     siftScore = SiftsimilarityScore(file_path, waterImages)
         
                 
-                if label == 'people':
-                    histScore = similarityScore(file_path, peopleImages)
-                    siftScore = SiftsimilarityScore(file_path, mylist)
+                if label == 'nature':
+                    histScore = similarityScore(file_path, natureImages)
+                    siftScore = SiftsimilarityScore(file_path, natureImages)
 
 
                 if label == 'building' or label == 'buildings':
-                    histScore = similarityScore(file_path, mylist)
-                    siftScore = SiftsimilarityScore(file_path, mylist)
+                    histScore = similarityScore(file_path, buildingImages)
+                    siftScore = SiftsimilarityScore(file_path, buildingImages)
           
                 finalScore = histScore[0]*0.6 + siftScore[0]*0.4
                 print(finalScore)
@@ -158,14 +164,17 @@ def home():
                     
                     print('Nice Pic')
                     scores.append(finalScore)
+                    imagesToRank.append(file_path)
                 else:
                     print('time to hang up your camera')
 
-
+            
                     
                 
 
                 array.append(extractedData)
+            rankedImgs = getMatches(scores, imagesToRank)
+            print(rankedImgs[0])
 
             
            

@@ -18,7 +18,7 @@ def SiftsimilarityScore(myImgPath, templateImgPath):
         # print(ind)
         
         im = cv2.imread(im_path)
-        im = cv2.resize(im, (500, 500))
+        im = cv2.resize(im, (400, 400))
 
         kp_2, desc_2 = sift.detectAndCompute(im, None)
         index_params = dict(algorithm=0, trees=5)
