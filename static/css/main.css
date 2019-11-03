@@ -34,3 +34,7 @@ a {
  ****************************************************************************/
 
 /* Various other styles end */
+.navbar a {
+  font-size: 1.5em;
+  color: black !important;
+}

@@ -1,0 +1,35 @@
+{% extends 'layouts/main.html' %} {% block title %}About{% endblock %} {% block
+content %}
+
+<div class="row text-center">
+  <img
+    src={{pics[0]}}
+    class="card-img-top"
+    width="200"
+    height="200"
+  />
+</div>
+<div class="row text-center">
+  <div class="col-md-4">
+    <img
+      src={{pics[1]}}
+      class="card-img-top"
+      width="200"
+      height="200"
+    />
+  </div>
+</div>
+<div class="row">
+  <div class="col-md-4"></div>
+  <div class="col-md-4"></div>
+  <div class="col-md-4">
+    <img
+      src={{pics[2]}}
+      class="card-img-top"
+      width="200"
+      height="200"
+    />
+  </div>
+</div>
+
+{% endblock %}
