@@ -50,7 +50,7 @@ def login_required(test):
 #----------------------------------------------------------------------------#
 # Controllers.
 #----------------------------------------------------------------------------#
-def getMatches(best_scores, best_images, center):
+def getMatches(best_scores, best_images, center=.4):
     for i,best_i in enumerate(best_scores):
             diff1 = abs(best_scores[i]-center) 
             for j,best_j in enumerate(best_scores):
@@ -123,60 +123,64 @@ def home():
         # check if the post request has the file part
         if 'file' not in request.files:
             flash('No file part')
-            return redirect('index.html')   
-        file = request.files['file']
-        # if user does not select file, browser also
-        # submit an empty part without filename
-        if file.filename == '':
-            flash('No selected file')
-            return redirect('index.html')
-        if file:
-            uploaded_files = request.files.getlist("file")
+            return render_template('pages/placeholder.home.html', please=4, p=4)
+            # return redirect('index.html')
+            #  
+
+        # file = request.files['file']
+        # # if user does not select file, browser also
+        # # submit an empty part without filename
+        # if file.filename == '':
+        #     flash('No selected file')
+        #     return redirect('index.html')
+        # if file:
+        uploaded_files = request.files.getlist("file")
+
             # print(uploaded_files)
-            array = []
-            picArr = []
-            for f in uploaded_files:
-                name = extractName(f.filename)
-                
-                file_path = os.path.join(app.config['UPLOAD_FOLDER'], name)
-                # print(file_path)
-                f.save(file_path)
-                picArr.append(file_path)
-                extractedData = analyze_image(file_path) 
-                # tags = extractedData['descriptions']['tags']
-                # mylist = [f for f in glob.glob("redditImages/*.jpg")]
-                if label == 'water':
-                    histScore = similarityScore(file_path, waterImages)
-                    siftScore = SiftsimilarityScore(file_path, waterImages)
+        array = []
+        picArr = []
+        for f in uploaded_files:
+            name = extractName(f.filename)
+            
+            file_path = os.path.join(app.config['UPLOAD_FOLDER'], name)
+            # print(file_path)
+            f.save(file_path)
+            picArr.append(file_path)
+            extractedData = analyze_image(file_path) 
+            # tags = extractedData['descriptions']['tags']
+            # mylist = [f for f in glob.glob("redditImages/*.jpg")]
+            if label == 'water':
+                histScore = similarityScore(file_path, waterImages)
+                siftScore = SiftsimilarityScore(file_path, waterImages)
+    
+            
+            if label == 'nature':
+                histScore = similarityScore(file_path, natureImages)
+                siftScore = SiftsimilarityScore(file_path, natureImages)
+
+
+            if label == 'building' or label == 'buildings':
+                histScore = similarityScore(file_path, buildingImages)
+                siftScore = SiftsimilarityScore(file_path, buildingImages)
         
+            finalScore = (histScore[0]*0.6 + siftScore[0]*0.4)/2
+            print(finalScore)
+
+            if finalScore < 0.7 and finalScore > 0.1:
                 
-                if label == 'nature':
-                    histScore = similarityScore(file_path, natureImages)
-                    siftScore = SiftsimilarityScore(file_path, natureImages)
-
-
-                if label == 'building' or label == 'buildings':
-                    histScore = similarityScore(file_path, buildingImages)
-                    siftScore = SiftsimilarityScore(file_path, buildingImages)
-          
-                finalScore = (histScore[0]*0.6 + siftScore[0]*0.4)/2
-                print(finalScore)
-
-                if finalScore < 0.7 and finalScore > 0.1:
-                    
-                    print('Nice Pic')
-                    scores.append(finalScore)
-                    imagesToRank.append(file_path)
-                else:
-                    print('time to hang up your camera')
+                print('Nice Pic')
+            else:
+                print('time to hang up your camera')
 
             
-                    
+            scores.append(finalScore)
+            imagesToRank.append(file_path)
                 
+            
 
-                array.append(extractedData)
-            rankedImgs = getMatches(scores, imagesToRank, 0.4)
-            print(rankedImgs[0])
+            array.append(extractedData)
+        rankedImgs = getMatches(scores, imagesToRank, 0.4)
+        print(rankedImgs[0])
 
             
            

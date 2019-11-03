@@ -5,7 +5,7 @@ import numpy as np
 def SiftsimilarityScore(myImgPath, templateImgPath):
     myImg = cv2.imread(myImgPath)
     try:
-        myImg = cv2.resize(myImg, (500, 500))
+        myImg = cv2.resize(myImg, (400, 400))
     except:
         print('empty')
     best_scores = []
@@ -26,11 +26,10 @@ def SiftsimilarityScore(myImgPath, templateImgPath):
         flann = cv2.FlannBasedMatcher(index_params, search_params)
         matches = flann.knnMatch(desc_1, desc_2, k=2)
         good_points = []
-        ratio = 0.8
+        ratio = 0.6
         for m, n in matches:
             if m.distance < ratio * n.distance:
                 good_points.append(m)
-        result = cv2.drawMatches(myImg, kp_1, im, kp_2, good_points, None)
 
         # Define how similar they are
         number_keypoints = 0
