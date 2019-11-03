@@ -50,8 +50,9 @@ def login_required(test):
 #----------------------------------------------------------------------------#
 # Controllers.
 #----------------------------------------------------------------------------#
-def getMatches():
-    pass
+def getMatches(val):
+    # sort score with respect to the value
+     
 
 
 def getData(path):
@@ -106,6 +107,7 @@ def analyze_image(url):
 
 @app.route('/', methods=['GET', 'POST'])
 def home():
+    scores = []
     waterImages, peopleImages, buildingImages = getData('data.txt')
     if request.method == 'POST':
         label = request.form['projectFilepath']
@@ -134,14 +136,14 @@ def home():
                 picArr.append(file_path)
                 extractedData = analyze_image(file_path) 
                 # tags = extractedData['descriptions']['tags']
-                mylist = [f for f in glob.glob("redditImages/*.jpg")]
+                # mylist = [f for f in glob.glob("redditImages/*.jpg")]
                 if label == 'water':
-                    histScore = similarityScore(file_path, mylist)
-                    siftScore = SiftsimilarityScore(file_path, mylist)
+                    histScore = similarityScore(file_path, waterImages)
+                    siftScore = SiftsimilarityScore(file_path, waterImages)
         
                 
                 if label == 'people':
-                    histScore = similarityScore(file_path, mylist)
+                    histScore = similarityScore(file_path, peopleImages)
                     siftScore = SiftsimilarityScore(file_path, mylist)
 
 
@@ -151,10 +153,11 @@ def home():
           
                 finalScore = histScore[0]*0.6 + siftScore[0]*0.4
                 print(finalScore)
-                
+
                 if finalScore < 0.7 and finalScore > 0.1:
                     
                     print('Nice Pic')
+                    scores.append(finalScore)
                 else:
                     print('time to hang up your camera')
 
