@@ -74,24 +74,49 @@ rawdata = response.json()
 data = rawdata['data']['children']
 
 dataPath = 'data.txt'
-
+organizedData = {}
+waterImages = []
+peopleImages = []
+buildingImages = []
 for i, obj in enumerate(data):
     image_url = obj['data']['url']
     res = requests.get(image_url, stream=True)
     
     #
     path = os.path.join('./redditImages/',str(i)+'.jpg')
+
     
-    with open (path, 'wb') as f, open(dataPath, 'a+') as d:
+    with open (path, 'wb') as f:
         res.raw.decode_content = True
         imgdata = res.raw
         shutil.copyfileobj(res.raw, f) 
         
         analysis = analyzeImage(path)
-        print(analysis)
-        json.dump(analysis, d)
-        
+        # print(analysis)
+        tags = analysis['description']['tags']
+        for tag in tags:
+            print(tag)
+            if tag == 'water':
+                waterImages.append(path)
+            if tag == 'people':
+                peopleImages.append(path)
+            if tag == 'building':
+                buildingImages.append(path)
         print("success")
+            
+
+# print(waterImages)  
+organizedData['water'] = waterImages
+organizedData['people'] = peopleImages
+organizedData['buildings'] = buildingImages
+print(organizedData)
+
+with open('data.txt', 'a+') as f:    
+
+    json.dump(organizedData, f)
+    f.write('\n')
+        
+        
     # except:
     #     print('couldnt do the thing')
     # except:

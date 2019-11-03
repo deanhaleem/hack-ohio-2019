@@ -14,11 +14,13 @@ import requests
 # %matplotlib inline
 from PIL import Image #pip install Pillow
 from io import BytesIO
+import similarity
+import similaritySifts
 
 #----------------------------------------------------------------------------#
 # App Config.
 #----------------------------------------------------------------------------#
-
+dataFile = 'data.txt'
 app = Flask(__name__)
 UPLOAD_FOLDER = 'static/img/'
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
@@ -48,7 +50,8 @@ def login_required(test):
 # Controllers.
 #----------------------------------------------------------------------------#
 
-def local_file(url):
+
+def analyze_image(url):
     os.environ['COMPUTER_VISION_SUBSCRIPTION_KEY'] = "ceb12c15a400458eb6884a6dc119986b"
     os.environ['COMPUTER_VISION_ENDPOINT'] = "https://deanhaleem.cognitiveservices.azure.com/"
 
@@ -83,7 +86,7 @@ def local_file(url):
     return analysis['description']['captions'][0]['text']
 
 @app.route('/', methods=['GET', 'POST'])
-def home():
+def home():    
     if request.method == 'POST':
         # check if the post request has the file part
         if 'file' not in request.files:
@@ -98,16 +101,19 @@ def home():
         if file:
             uploaded_files = request.files.getlist("file")
             print(uploaded_files)
-            array = []
+            userData = []
+            paths = []
             for f in uploaded_files:
                 name = extractName(f.filename)
                 file_path = os.path.join(app.config['UPLOAD_FOLDER'], name)
                 print("PATH NAME:" + file_path)
                 f.save(file_path)
-                array.append(local_file(file_path))
-            
-            data = request.form['projectFilepath']        
-            print(data)
+                userData.append(analyze_image(file_path))
+                paths.append(file_path)
+                
+            label = request.form['projectFilepath']
+
+            print(label)
             
         return render_template('pages/placeholder.home.html', title='Upload', src=array[0])
     else:
