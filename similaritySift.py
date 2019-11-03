@@ -1,5 +1,6 @@
 import cv2
 import numpy as np
+
 import math
 
 '''
@@ -41,21 +42,43 @@ cv2.waitKey()
 def similarityScore(myImg, templateImg):
     best_scores = []
     best_images = []
-    histr = cv2.calcHist([myImg],[0],None,[256],[0,256])
+    sift = cv2.xfeatures2d.SIFT_create()
+    kp_1, desc_1 = sift.detectAndCompute(myImg, None)
 
-    for im in templateImg:
-        histg = cv2.calcHist([im], [0], None, [256], [0, 256])
-        a = cv2.compareHist(histr, histg, cv2.HISTCMP_BHATTACHARYYA)
 
+    for ind,im in enumerate(templateImg):
+        print(ind)
+        im = cv2.resize(im, (500,500))
+        kp_2, desc_2 = sift.detectAndCompute(im, None)
+        index_params = dict(algorithm=0, trees=5)
+        search_params = dict()
+        flann = cv2.FlannBasedMatcher(index_params, search_params)
+        matches = flann.knnMatch(desc_1, desc_2, k=2)
+        good_points = []
+        ratio = 0.8
+        for m, n in matches:
+            if m.distance < ratio * n.distance:
+                good_points.append(m)
+        result = cv2.drawMatches(myImg, kp_1, im, kp_2, good_points, None)
+
+        # Define how similar they are
+        number_keypoints = 0
+        if len(kp_1) <= len(kp_2):
+            number_keypoints = len(kp_1)
+        else:
+            number_keypoints = len(kp_2)
+        print("Keypoints 1ST Image: " + str(len(kp_1)))
+        print("Keypoints 2ND Image: " + str(len(kp_2)))
+        result = len(good_points) / number_keypoints
         if len(best_scores) < 3:
-            best_scores.append(a)
+            best_scores.append(result)
             best_images.append(im)
         else:
-            worst = [index for index,k in enumerate(best_scores) if k == min(best_scores)]
+            best = [index for index,notArray in enumerate(best_scores) if notArray == max(best_scores)]
 
-            if a < min(best_scores):
-                best_scores[worst[0]] = a
-                best_images[worst[0]] = im
+            if result > max(best_scores):
+                best_scores[best[0]] = result
+                best_images[best[0]] = im
 
     for k in range(len(best_images)):
         best_images[k] = cv2.resize(best_images[k], (500,500))
@@ -64,9 +87,15 @@ def similarityScore(myImg, templateImg):
     myImg = cv2.resize(myImg, (500, 500))
     cv2.imshow('Source image', myImg)
     cv2.imshow('Sorted in no order', np.hstack((best_images[0], best_images[1], best_images[2])))
-    print(f"{best_scores[0]}, {best_scores[1]}, {best_scores[2]},")
+    print(f"{best_scores[0]*100}, {best_scores[1]*100}, {best_scores[2]*100},")
     cv2.waitKey(0)
-    return sum(best_scores)/3
+    mean_ = sum(best_scores)/3 * 100
+    if mean_ < .001:
+        print("Need a better picture")
+    else:
+        print("Nice Picture!")
+
+    return mean_
 
 imgs = []
 for l in range(25):
