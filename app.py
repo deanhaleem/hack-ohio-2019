@@ -50,10 +50,12 @@ def login_required(test):
 #----------------------------------------------------------------------------#
 # Controllers.
 #----------------------------------------------------------------------------#
-def getMatches(best_scores, best_images):
+def getMatches(best_scores, best_images, center):
     for i,best_i in enumerate(best_scores):
+            diff1 = abs(best_scores[i]-center) 
             for j,best_j in enumerate(best_scores):
-                if best_i > best_j:
+                diff2 = abs(best_scores[j]-center)
+                if diff2 < diff1:
                     best_scores[i], best_scores[j] = best_scores[j], best_scores[i]
                     best_images[i], best_images[j] = best_images[j], best_images[i]
     return best_images
@@ -173,7 +175,7 @@ def home():
                 
 
                 array.append(extractedData)
-            rankedImgs = getMatches(scores, imagesToRank)
+            rankedImgs = getMatches(scores, imagesToRank, 0.4)
             print(rankedImgs[0])
 
             
