@@ -80,7 +80,7 @@ def local_file(url):
     # The 'analysis' object contains various fields that describe the image. The most
     # relevant caption for the image is obtained from the 'description' property.
     analysis = response.json()
-    return analysis['description']['captions'][0]['text']
+    return analysis
 
 @app.route('/', methods=['GET', 'POST'])
 def home():
@@ -99,35 +99,45 @@ def home():
             uploaded_files = request.files.getlist("file")
             print(uploaded_files)
             array = []
+            picArr = []
             for f in uploaded_files:
                 name = extractName(f.filename)
                 file_path = os.path.join(app.config['UPLOAD_FOLDER'], name)
-                print("PATH NAME:" + file_path)
+                print(file_path)
                 f.save(file_path)
+                picArr.append(file_path)
                 array.append(local_file(file_path))
             
-            data = request.form['projectFilepath']        
+            data = request.form['projectFilepath']
             print(data)
             
-        return render_template('pages/placeholder.home.html', title='Upload', src=array[0])
+        return render_template('pages/display.html', title='Upload', pics=picArr)
     else:
-        return '''
-        <!doctype html>
-        <title>Upload New File</title>
-        <h1>Upload New File</h1>
-        <form method=post enctype=multipart/form-data>
-            <input type="text" name="projectFilepath"> 
-            <input type=file name="file" multiple webkitdirectory>      
-            <input type=submit value=upload>      
-        </form>
-        '''
+        return render_template('pages/placeholder.home.html', please=4, p=4)
 
 def extractName(name):
-    return os.path.dirname(os.path.abspath(name))
+    return os.path.basename(name)
+
+# @app.route('/')
+# def home():
+#     arr = ["static/img/Items-Extras.png"]
+#     return render_template('pages/placeholder.home.html', please=4, p=4, pics=arr)
 
 @app.route('/about')
 def about():
     return render_template('pages/placeholder.about.html')
+
+@app.route('/printf')
+def printf():
+    return '<p>Hello</p>'
+
+@app.route('/gallery')
+def gallery():
+    return render_template('pages/gallery.html')
+
+@app.route('/improvement')
+def improvement():
+    return render_template('pages/improvement.html')
 
 
 @app.route('/login')
