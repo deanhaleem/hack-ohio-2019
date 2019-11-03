@@ -2,7 +2,8 @@ import cv2
 import numpy as np
 
 # templateImg is a list of images
-def similarityScore(myImg, templateImgPath):
+def similarityScore(myImgP, templateImgPath):
+    myImg = cv2.imread(myImgP)
     best_scores = []
     best_images = []
     histr = cv2.calcHist([myImg],[0],None,[256],[0,256])
@@ -41,4 +42,13 @@ def show(myImgPath, best_images):
     cv2.imshow("mine",myImg)
     cv2.imshow("yours",np.hstack((bImgs[0], bImgs[1], bImgs[2])))
     cv2.waitKey(0)
+
+'''
+reddit = []
+for l in range(25):
+    reddit.append(f"redditImages/{l}.jpg")
+m, b, b_s = similarityScore("mine.jpg", reddit)
+show("mine.jpg", b)
+print(m)
+'''
 

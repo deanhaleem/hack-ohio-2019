@@ -55,10 +55,6 @@ def similarityScore(myImgPath, templateImgPath):
                     best_images[i], best_images[j] = best_images[j], best_images[i]
 
     mean_ = sum(best_scores)/3
-    if mean_ < .001:
-        print("Need a better picture")
-    else:
-        print("Nice Picture!")
 
     return mean_, best_images, best_scores
 
@@ -73,3 +69,14 @@ def show(myImgPath, best_images):
     cv2.imshow("mine",myImg)
     cv2.imshow("yours",np.hstack((bImgs[0], bImgs[1], bImgs[2])))
     cv2.waitKey(0)
+
+
+
+'''
+reddit = []
+for l in range(25):
+    reddit.append(f"redditImages/{l}.jpg")
+m, b, b_s = similarityScore("mine.jpg", reddit)
+show("mine.jpg", b)
+print(m)
+'''
