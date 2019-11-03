@@ -1,6 +1,5 @@
 import cv2
 import numpy as np
-import math
 
 # templateImg is a list of images
 def similarityScore(myImgPath, templateImgPath):
@@ -38,20 +37,25 @@ def similarityScore(myImgPath, templateImgPath):
 
     return sum(best_scores)/3, best_images, best_scores
 
-# def show(myImgPath, best_images):
-#     myImg = cv2.imread(myImgPath)
-#     myImg = cv2.resize(myImg, (500,500))
-#     bImgs = []
-#     for l in best_images:
-#         bImgs.append(cv2.resize(cv2.imread(l), (500,500)))
 
-#     cv2.imshow("mine",myImg)
-#     cv2.imshow("yours",np.hstack((bImgs[0], bImgs[1], bImgs[2])))
-#     cv2.waitKey(0)
 
-# imgs = []
-# for l in range(25):
-#     imgs.append(f"redditImages/{l}.jpg")
-# myImg = cv2.imread("mine.jpg")
-# a, bestP, best_scores = similarityScore(imgs[0], imgs)
-# print(a)
+def show(myImgPath, best_images):
+    myImg = cv2.imread(myImgPath)
+    myImg = cv2.resize(myImg, (500,500))
+    bImgs = []
+    for l in best_images:
+        bImgs.append(cv2.resize(cv2.imread(l), (500,500)))
+
+    cv2.imshow("mine",myImg)
+    cv2.imshow("yours",np.hstack((bImgs[0], bImgs[1], bImgs[2])))
+    cv2.waitKey(0)
+
+'''
+reddit = []
+for l in range(25):
+    reddit.append(f"redditImages/{l}.jpg")
+m, b, b_s = similarityScore("mine.jpg", reddit)
+show("mine.jpg", b)
+print(m)
+'''
+

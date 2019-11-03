@@ -1,8 +1,6 @@
 import cv2
 import numpy as np
 
-import math
-
 # templateImg is a list of images
 def SiftsimilarityScore(myImgPath, templateImgPath):
     myImg = cv2.imread(myImgPath)
