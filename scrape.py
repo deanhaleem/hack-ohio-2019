@@ -76,7 +76,7 @@ data = rawdata['data']['children']
 dataPath = 'data.txt'
 organizedData = {}
 waterImages = []
-peopleImages = []
+natureImages = []
 buildingImages = []
 for i, obj in enumerate(data):
     image_url = obj['data']['url']
@@ -89,7 +89,7 @@ for i, obj in enumerate(data):
     with open (path, 'wb') as f:
         res.raw.decode_content = True
         imgdata = res.raw
-        shutil.copyfileobj(res.raw, f) 
+        shutil.copyfileobj(res.raw, f)
         
         analysis = analyzeImage(path)
         # print(analysis)
@@ -98,8 +98,8 @@ for i, obj in enumerate(data):
             print(tag)
             if tag == 'water':
                 waterImages.append(path)
-            if tag == 'people':
-                peopleImages.append(path)
+            if tag in ['nature', 'mountain', 'rocky', 'hill', 'green', 'tree', 'nature']:
+                natureImages.append(path)
             if tag == 'building':
                 buildingImages.append(path)
         print("success")
@@ -107,24 +107,11 @@ for i, obj in enumerate(data):
 
 # print(waterImages)  
 organizedData['water'] = waterImages
-organizedData['people'] = peopleImages
+organizedData['nature'] = natureImages
 organizedData['buildings'] = buildingImages
 print(organizedData)
 
-with open('data.txt', 'a+') as f:    
+with open('data.txt', 'w') as f:
 
     json.dump(organizedData, f)
     f.write('\n')
-        
-        
-    # except:
-    #     print('couldnt do the thing')
-    # except:
-        # print("hi")
-
-    
-    
-
-
-
-# pprint(data['data']['children'][0]['data']['url'])
