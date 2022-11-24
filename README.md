@@ -1,40 +1,46 @@
-<div id="top"></div>
-<!-- PROJECT LOGO -->
-<br />
-<div align="center">
-  <!-- <a href="https://github.com/deanhaleem/mario-clone-js">
-    <img src="images/logo.png" alt="Logo" width="80" height="80">
-  </a> -->
+# hack-ohio-2019
 
-<h3 align="center">Image Ranker</h3>
+This template should help get you started developing with Vue 3 in Vite.
 
-  <p align="center">
-    Determine which image will garner the most attention on social media
-    <br />
-  </p>
-</div>
+## Recommended IDE Setup
 
-<!-- ABOUT THE PROJECT -->
+[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur) + [TypeScript Vue Plugin (Volar)](https://marketplace.visualstudio.com/items?itemName=Vue.vscode-typescript-vue-plugin).
 
-## About The Project
+## Type Support for `.vue` Imports in TS
 
-<!-- [![Product Name Screen Shot][product-screenshot]](https://example.com) -->
+TypeScript cannot handle type information for `.vue` imports by default, so we replace the `tsc` CLI with `vue-tsc` for type checking. In editors, we need [TypeScript Vue Plugin (Volar)](https://marketplace.visualstudio.com/items?itemName=Vue.vscode-typescript-vue-plugin) to make the TypeScript language service aware of `.vue` types.
 
-Ranks the input images in terms of which is most likely to succeed on social media platforms.
+If the standalone TypeScript plugin doesn't feel fast enough to you, Volar has also implemented a [Take Over Mode](https://github.com/johnsoncodehk/volar/discussions/471#discussioncomment-1361669) that is more performant. You can enable it by the following steps:
 
-<!-- <p align="right">(<a href="#top">back to top</a>)</p> -->
+1. Disable the built-in TypeScript Extension
+    1) Run `Extensions: Show Built-in Extensions` from VSCode's command palette
+    2) Find `TypeScript and JavaScript Language Features`, right click and select `Disable (Workspace)`
+2. Reload the VSCode window by running `Developer: Reload Window` from the command palette.
 
-### Built With
+## Customize configuration
 
-- [OpenCV](https://opencv.org/)
-- [Flask](https://flask.palletsprojects.com/en/2.2.x/)
-- [Reddit API](https://www.reddit.com/dev/api/)
-- [Azure Cognitive Services](https://azure.microsoft.com/en-us/products/cognitive-services/)
+See [Vite Configuration Reference](https://vitejs.dev/config/).
 
-## Contact
+## Project Setup
 
-Dean Haleem
-Nick Kashani
-Rohin Dasari
-Rith
-Reis Haleem
+```sh
+npm install
+```
+
+### Compile and Hot-Reload for Development
+
+```sh
+npm run dev
+```
+
+### Type-Check, Compile and Minify for Production
+
+```sh
+npm run build
+```
+
+### Lint with [ESLint](https://eslint.org/)
+
+```sh
+npm run lint
+```
