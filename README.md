@@ -36,5 +36,5 @@ Ranks the input images in terms of which is most likely to succeed on social med
 Dean Haleem
 Nick Kashani
 Rohin Dasari
-Rith
+Rith Ramesh
 Reis Haleem
